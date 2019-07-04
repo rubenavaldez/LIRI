@@ -3,6 +3,7 @@ require("dotenv").config();
 var keys = require("./keys.js");
 var fs = require("fs")
 var axios = require("axios");
+var bandsintown = require('bandsintown')(APP_ID);
 
 // require spotify
 // var spotify = new Spotify(keys.spotify);
@@ -10,68 +11,105 @@ var axios = require("axios");
 var type = process.argv[2];
 var searchTerm = "";
 
-function search(){
-for ( i = 3; i < process.argv.length; i++ ){
-    searchTerm = searchTerm + " " + process.argv[i]
-    
-}
+function search() {
+    for (i = 3; i < process.argv.length; i++) {
+        searchTerm = searchTerm + process.argv[i] + " "
+
+    }
 };
 
 
 search();
 console.log(searchTerm)
 
-switch(type){
+switch (type) {
     case "concert-this":
         searchConcert()
         console.log(searchTerm)
         break;
 
-        case "spotify-this-song":
-            searchSpotify()
-            console.log(searchTerm)
+    case "spotify-this-song":
+        searchSpotify()
+        console.log(searchTerm)
         break;
 
-        case "movie-this":
-            searchMovie()
-            console.log(searchTerm)
+    case "movie-this":
+        searchMovie()
+        // console.log(searchTerm)
         break;
 
-        case "do-what-it-says":
-            searchRandom()
-            console.log(searchTerm)
+    case "do-what-it-says":
+        searchRandom()
+        console.log(searchTerm)
         break;
 
-        default:
-            break;
-        
+    default:
+        break;
+
 }
 
 
 
-function searchConcert(){
+function searchConcert() {
     console.log("concert")
-    
-    //"https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp")
+    if (searchTerm == "") {
+        searchTerm = "Black Amethyst"
+    }
+    //"")
     //venue name
     //venue location
+    
+
+
+    // This line is just to help us debug against the actual URL.
+    
+
+
+
+
+
+    bandsintown.getArtistEventList(searchTerm)
+        .then(function (events) {
+            // return array of events
+        })
+      .catch (function(error) {
+        if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            console.log("---------------Data---------------");
+            console.log(error.response.data);
+            console.log("---------------Status---------------");
+            console.log(error.response.status);
+            console.log("---------------Status---------------");
+            console.log(error.response.headers);
+        } else if (error.request) {
+            // The request was made but no response was received
+            // `error.request` is an object that comes back with details pertaining to the error that occurred.
+            console.log(error.request);
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            console.log("Error", error.message);
+        }
+        console.log(error.config);
+    });
 }
 
-function searchSpotify(){
+function searchSpotify() {
     console.log("spotify")
     //Artist
     //Song Name
     //link of song from spotify
     //album
     // if none default is "the sign" by ace of base
-    
+
 }
 
-function searchMovie(){
+function searchMovie() {
     console.log("movie")
-    if(searchTerm == ""){
+    if (searchTerm == "") {
         searchTerm = "Mr. Nobody"
     }
+    //Include these results
     // title
     // year
     // imdb rating
@@ -84,62 +122,62 @@ function searchMovie(){
     queryUrl = "http://www.omdbapi.com/?t=" + searchTerm + "&y=&plot=short&apikey=trilogy";
 
 
-// This line is just to help us debug against the actual URL.
-console.log(queryUrl);
+    // This line is just to help us debug against the actual URL.
+    console.log(queryUrl);
 
 
 
 
 
-axios.get(queryUrl)
+    axios.get(queryUrl)
 
-.then(
-  function(response) {
-      console.log(response.data)
-      console.log(response.data.Title)
-      console.log("Filmed in " + response.data.Year)
-      console.log("IMDB rates it at: " + response.data.imdbRating);
-      if(response.data.Ratings[1] != undefined){
-        console.log("Rotten tomatoes gave " + response.data.Title + " a rating of " + response.data.Ratings[1].Value)    
-        }     
-      
-      console.log(response.data.Title + " was produced in " + response.data.Country)
-      console.log("It's available is " + response.data.Language)
-      if(response.data.Plot == "N/A"){
-          console.log(response.data.Title + " didn't really have a plot")
-      } else{
+        .then(
+            function (response) {
+                // console.log(response.data)
+                console.log(response.data.Title)
+                console.log("Filmed in " + response.data.Year)
+                console.log("IMDB rates it at: " + response.data.imdbRating);
+                if (response.data.Ratings[1] != undefined) {
+                    console.log("Rotten tomatoes gave " + response.data.Title + " a rating of " + response.data.Ratings[1].Value)
+                }
 
-      console.log(response.data.Plot)
-      }
-      console.log("Staring " + response.data.Actors)
-       
+                console.log(response.data.Title + " was produced in " + response.data.Country)
+                console.log("It's available is " + response.data.Language)
+                if (response.data.Plot == "N/A") {
+                    console.log(response.data.Title + " didn't really have a plot")
+                } else {
 
-    
+                    console.log(response.data.Plot)
+                }
+                console.log("Staring " + response.data.Actors)
 
-  })
-  .catch(function(error) {
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.log("---------------Data---------------");
-      console.log(error.response.data);
-      console.log("---------------Status---------------");
-      console.log(error.response.status);
-      console.log("---------------Status---------------");
-      console.log(error.response.headers);
-    } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an object that comes back with details pertaining to the error that occurred.
-      console.log(error.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log("Error", error.message);
-    }
-    console.log(error.config);
-  });
+
+
+
+            })
+        .catch(function (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log("---------------Data---------------");
+                console.log(error.response.data);
+                console.log("---------------Status---------------");
+                console.log(error.response.status);
+                console.log("---------------Status---------------");
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an object that comes back with details pertaining to the error that occurred.
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log("Error", error.message);
+            }
+            console.log(error.config);
+        });
 }
 
-function searchRandom(){
+function searchRandom() {
     console.log("random")
     //use fs
     //run spotify this song
