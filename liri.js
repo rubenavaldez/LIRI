@@ -70,7 +70,7 @@ function searchConcert() {
     //venue name
     //venue location
     
-    var queryUrl = 'https://rest.bandsintown.com/artists/'+searchTerm+'?app_id=trilogy'
+    var queryUrl = 'https://rest.bandsintown.com/artists/'+searchTerm+'/events?app_id=trilogy&date=upcoming'
     console.log(queryUrl)
 
     // This line is just to help us debug against the actual URL.
