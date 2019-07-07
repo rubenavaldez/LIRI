@@ -16,10 +16,17 @@ var type = process.argv[2];
 var searchTerm = "";
 
 function search() {
+    
     for (i = 3; i < process.argv.length; i++) {
-        searchTerm = searchTerm + process.argv[i] + " "
+        if(i < 4){
+            console.log('single word')
+            searchTerm += process.argv[i] 
+        }else{
+        searchTerm += " " + process.argv[i] 
 
     }
+}
+   
 };
 
 
@@ -63,42 +70,18 @@ function searchConcert() {
     //venue name
     //venue location
     
-
+    var queryUrl = 'https://rest.bandsintown.com/artists/'+searchTerm+'?app_id=trilogy'
+    console.log(queryUrl)
 
     // This line is just to help us debug against the actual URL.
-    
+    axios
+    .get(queryUrl)
+    .then (function (response){
+        console.log(response.data)
+    }) 
 
 
 
-
-
-    bandsintown.getArtist(searchTerm)
-        .then(function (events) {
-            console.log(events)
-            console.log("it worked")
-            // console.log(events._events)
-            // return array of events.
-        })
-      .catch (function(error) {
-        if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.log("---------------Data---------------");
-            console.log(error.response.data);
-            console.log("---------------Status---------------");
-            console.log(error.response.status);
-            console.log("---------------Status---------------");
-            console.log(error.response.headers);
-        } else if (error.request) {
-            // The request was made but no response was received
-            // `error.request` is an object that comes back with details pertaining to the error that occurred.
-            console.log(error.request);
-        } else {
-            // Something happened in setting up the request that triggered an Error
-            console.log("Error", error.message);
-        }
-        // console.log(error.config);
-    });
 }
 
 function searchSpotify() {
