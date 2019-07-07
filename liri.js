@@ -2,11 +2,15 @@ require("dotenv").config();
 
 var keys = require("./keys.js");
 var fs = require("fs")
-var axios = require("axios");
-var bandsintown = require('bandsintown')(APP_ID);
+var axios = require("axios")
+var bandsintown = require('bandsintown')("trilogy");
 
-// require spotify
-// var spotify = new Spotify(keys.spotify);
+var Spotify = require('node-spotify-api');
+ 
+var spotify = new Spotify({
+  id: "09d7fb5de364429e89c582b4b1f420f9",
+  secret: "0166194dfc1a465b86f631011be98643"
+});
 
 var type = process.argv[2];
 var searchTerm = "";
@@ -68,9 +72,12 @@ function searchConcert() {
 
 
 
-    bandsintown.getArtistEventList(searchTerm)
+    bandsintown.getArtist(searchTerm)
         .then(function (events) {
-            // return array of events
+            console.log(events)
+            console.log("it worked")
+            // console.log(events._events)
+            // return array of events.
         })
       .catch (function(error) {
         if (error.response) {
@@ -90,7 +97,7 @@ function searchConcert() {
             // Something happened in setting up the request that triggered an Error
             console.log("Error", error.message);
         }
-        console.log(error.config);
+        // console.log(error.config);
     });
 }
 
@@ -101,7 +108,21 @@ function searchSpotify() {
     //link of song from spotify
     //album
     // if none default is "the sign" by ace of base
-
+    if(searchTerm == ""){
+        searchTerm = "the sign ace of base"
+    }
+    spotify
+    .request("https://api.spotify.com/v1/search?q=" + searchTerm + " &type=track,artist,album&limit=1")
+    .then(function(data) {
+     
+      console.log(data.tracks.items[0].album.artists[0].name)
+      console.log(data.tracks.items[0].album.artists[0].external_urls.spotify)
+      console.log(data.tracks.items[0].album.name); 
+    
+    })
+    .catch(function(err) {
+      console.error('Error occurred: ' + err); 
+    });
 }
 
 function searchMovie() {
@@ -122,7 +143,7 @@ function searchMovie() {
     queryUrl = "http://www.omdbapi.com/?t=" + searchTerm + "&y=&plot=short&apikey=trilogy";
 
 
-    // This line is just to help us debug against the actual URL.
+    
     console.log(queryUrl);
 
 
