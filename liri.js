@@ -77,7 +77,11 @@ function searchConcert() {
     axios
     .get(queryUrl)
     .then (function (response){
-        console.log(response.data)
+        console.log(response.data[0].venue.name)
+        
+        console.log(response.data[0].venue.city)
+        console.log(response.data[0].venue.region)
+        console.log(response.data[0].datetime)
     }) 
 
 
