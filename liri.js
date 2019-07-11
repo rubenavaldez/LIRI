@@ -32,7 +32,10 @@ function search() {
 
 search();
 console.log(searchTerm)
+switchType(type, searchTerm )
 
+function switchType(type, searchTerm ){
+    console.log("switch")
 switch (type) {
     case "concert-this":
         searchConcert()
@@ -51,12 +54,14 @@ switch (type) {
 
     case "do-what-it-says":
         searchRandom()
+        //refer to C:\Users\ruben\code\Bootcamp-gitlab\class-content\week-10\day-02\class-activities for fm 
         console.log(searchTerm)
         break;
 
     default:
         break;
 
+}
 }
 
 
@@ -191,6 +196,26 @@ function searchRandom() {
     //run spotify this song
     //"i want it that way" import from random text
     // test this with movie-this and concert-this
+    fs.readFile("random.txt", "utf8", function(error, data) {
+
+        // If the code experiences any errors it will log the error to the console.
+        if (error) {
+          return console.log(error);
+        }
+      
+        // We will then print the contents of data
+        console.log(data);
+      
+        // Then split it by commas (to make it more readable)
+        var dataArr = data.split(",");
+      
+        // We will then re-display the content as an array for later use.
+        // console.log(dataArr[0]);  type
+        // console.log(dataArr[1]);  searchTerm
+        type = dataArr[0];
+        searchTerm = dataArr[1].replace(/['"]+/g, '')
+        switchType(type, searchTerm )      
+      });
 }
 
 //bonus
