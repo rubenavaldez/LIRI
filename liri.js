@@ -1,36 +1,22 @@
 require("dotenv").config();
 
-var keys = require("./keys.js");
-var fs = require("fs")
-var axios = require("axios")
+
+var fs = require("fs");
+var axios = require("axios");
 var bandsintown = require('bandsintown')("trilogy");
 
 var Spotify = require('node-spotify-api');
- 
-var spotify = new Spotify({
-  id: "09d7fb5de364429e89c582b4b1f420f9",
-  secret: "0166194dfc1a465b86f631011be98643"
-});
+var keys = require("./keys.js");
+
+var spotify = new Spotify(keys.spotify);
+
+
 
 var type = process.argv[2];
 var searchTerm = "";
 
-function search() {
-    
-    for (i = 3; i < process.argv.length; i++) {
-        if(i < 4){
-            console.log('single word')
-            searchTerm += process.argv[i] 
-        }else{
-        searchTerm += " " + process.argv[i] 
+searchTerm = process.argv.slice(3).join(" ")
 
-    }
-}
-   
-};
-
-
-search();
 console.log(searchTerm)
 switchType(type, searchTerm )
 
@@ -49,12 +35,12 @@ switch (type) {
 
     case "movie-this":
         searchMovie()
-        // console.log(searchTerm)
+        
         break;
 
     case "do-what-it-says":
         searchRandom()
-        //refer to C:\Users\ruben\code\Bootcamp-gitlab\class-content\week-10\day-02\class-activities for fm 
+       
         console.log(searchTerm)
         break;
 
@@ -71,14 +57,12 @@ function searchConcert() {
     if (searchTerm == "") {
         searchTerm = "Black Amethyst"
     }
-    //"")
-    //venue name
-    //venue location
+   
     
     var queryUrl = 'https://rest.bandsintown.com/artists/'+searchTerm+'/events?app_id=trilogy&date=upcoming'
     console.log(queryUrl)
 
-    // This line is just to help us debug against the actual URL.
+    
     axios
     .get(queryUrl)
     .then (function (response){
@@ -87,6 +71,17 @@ function searchConcert() {
         console.log(response.data[0].venue.city)
         console.log(response.data[0].venue.region)
         console.log(response.data[0].datetime)
+
+
+        var logMe = JSON.stringify("Search BandsInTown for: " + searchTerm + " concerts" + "  Venue name: " + response.data[0].venue.name + "  Located in " + response.data[0].venue.city + " " +response.data[0].venue.region + " on " + response.data[0].datetime );
+        console.log(logMe)
+        fs.appendFile("log.txt", logMe, function (err) {
+        if (err) console.log(err);
+        
+        })
+
+        
+
     }) 
 
 
@@ -100,6 +95,8 @@ function searchSpotify() {
     //link of song from spotify
     //album
     // if none default is "the sign" by ace of base
+    var spotify = new Spotify(keys.spotify);
+
     if(searchTerm == ""){
         searchTerm = "the sign ace of base"
     }
@@ -109,16 +106,21 @@ function searchSpotify() {
      
       console.log(data.tracks.items[0].album.artists[0].name)
       console.log(data.tracks.items[0].album.artists[0].external_urls.spotify)
-      console.log(data.tracks.items[0].album.name); 
+      console.log(data.tracks.items[0].album.name);
+      
+      var logMe = JSON.stringify("Search Spotify for: " + searchTerm + "  Name: " + data.tracks.items[0].album.artists[0].name  + "  Album: " +data.tracks.items[0].album.name+ "  URL: " + data.tracks.items[0].album.artists[0].external_urls.spotify);
+    console.log(logMe)
+    fs.appendFile("log.txt", logMe, function (err) {
+    if (err) console.log(err);
     
     })
-    .catch(function(err) {
-      console.error('Error occurred: ' + err); 
-    });
-}
+    
+});
+};
 
 function searchMovie() {
     console.log("movie")
+    
     if (searchTerm == "") {
         searchTerm = "Mr. Nobody"
     }
@@ -155,7 +157,7 @@ function searchMovie() {
                 }
 
                 console.log(response.data.Title + " was produced in " + response.data.Country)
-                console.log("It's available is " + response.data.Language)
+                console.log("It's available is in " + response.data.Language)
                 if (response.data.Plot == "N/A") {
                     console.log(response.data.Title + " didn't really have a plot")
                 } else {
@@ -164,7 +166,12 @@ function searchMovie() {
                 }
                 console.log("Staring " + response.data.Actors)
 
-
+                var logMe = JSON.stringify("Search OMDB for: " + searchTerm + "  Name: " + response.data.Title  + "  Filmed in " + response.data.Year + "  IMDB rates it at: " + response.data.imdbRating +"  Rotten tomatoes gave " + response.data.Title + " a rating of " + response.data.Ratings[1].Value +"  "+response.data.Title + " was produced in " + response.data.Country +"  It's available is in " + response.data.Language + "  Plot summary: " +response.data.Plot+ "  Staring " + response.data.Actors);
+                console.log(logMe)
+                fs.appendFile("log.txt", logMe, function (err) {
+                if (err) console.log(err);
+                
+                })
 
 
             })
@@ -209,16 +216,12 @@ function searchRandom() {
         // Then split it by commas (to make it more readable)
         var dataArr = data.split(",");
       
-        // We will then re-display the content as an array for later use.
-        // console.log(dataArr[0]);  type
-        // console.log(dataArr[1]);  searchTerm
+        
         type = dataArr[0];
         searchTerm = dataArr[1].replace(/['"]+/g, '')
         switchType(type, searchTerm )      
       });
 }
 
-//bonus
-//write to log.txt
-//append not overwrite
+
 
