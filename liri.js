@@ -60,7 +60,7 @@ function searchConcert() {
    
     
     var queryUrl = 'https://rest.bandsintown.com/artists/'+searchTerm+'/events?app_id=trilogy&date=upcoming'
-    console.log(queryUrl)
+    // console.log(queryUrl)
 
     
     axios
@@ -74,7 +74,7 @@ function searchConcert() {
 
 
         var logMe = JSON.stringify("Search BandsInTown for: " + searchTerm + " concerts" + "  Venue name: " + response.data[0].venue.name + "  Located in " + response.data[0].venue.city + " " +response.data[0].venue.region + " on " + response.data[0].datetime );
-        console.log(logMe)
+        // console.log(logMe)
         fs.appendFile("log.txt", logMe, function (err) {
         if (err) console.log(err);
         
@@ -109,7 +109,7 @@ function searchSpotify() {
       console.log(data.tracks.items[0].album.name);
       
       var logMe = JSON.stringify("Search Spotify for: " + searchTerm + "  Name: " + data.tracks.items[0].album.artists[0].name  + "  Album: " +data.tracks.items[0].album.name+ "  URL: " + data.tracks.items[0].album.artists[0].external_urls.spotify);
-    console.log(logMe)
+    // console.log(logMe)
     fs.appendFile("log.txt", logMe, function (err) {
     if (err) console.log(err);
     
@@ -138,7 +138,7 @@ function searchMovie() {
 
 
     
-    console.log(queryUrl);
+    // console.log(queryUrl);
 
 
 
@@ -167,7 +167,7 @@ function searchMovie() {
                 console.log("Staring " + response.data.Actors)
 
                 var logMe = JSON.stringify("Search OMDB for: " + searchTerm + "  Name: " + response.data.Title  + "  Filmed in " + response.data.Year + "  IMDB rates it at: " + response.data.imdbRating +"  Rotten tomatoes gave " + response.data.Title + " a rating of " + response.data.Ratings[1].Value +"  "+response.data.Title + " was produced in " + response.data.Country +"  It's available is in " + response.data.Language + "  Plot summary: " +response.data.Plot+ "  Staring " + response.data.Actors);
-                console.log(logMe)
+                // console.log(logMe)
                 fs.appendFile("log.txt", logMe, function (err) {
                 if (err) console.log(err);
                 
