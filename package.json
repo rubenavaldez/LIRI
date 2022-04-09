@@ -11,7 +11,7 @@
     "fs": "0.0.1-security",
     "lodash": "^4.17.14",
     "lodash.template": "^4.4.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "node-spotify-api": "^1.1.1",
     "object-assign": "^4.1.1",
     "prequest": "^1.0.0",
